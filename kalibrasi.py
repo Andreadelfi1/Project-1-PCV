@@ -3,15 +3,13 @@ import cv2
 import numpy as np
 
 cap = cv2.VideoCapture(0)
-samples = {"white": [], "skin": []}
+samples = {"white": [], "black": []}
 mode = "white"
-frame_now = None
 frame_raw = None
 
 
 def on_mouse(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN and frame_raw is not None:
-        # ambil patch 21x21 piksel di sekitar klik
         patch = frame_raw[max(0, y - 10):y + 11, max(0, x - 10):x + 11]
         hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV).reshape(-1, 3)
         samples[mode].append(hsv)
@@ -21,8 +19,8 @@ def on_mouse(event, x, y, flags, param):
 cv2.namedWindow("kalibrasi")
 cv2.setMouseCallback("kalibrasi", on_mouse)
 
-print("W = mode sarung tangan putih, K = mode kulit")
-print("Klik di beberapa titik sarung tangan/kulit (5-8 klik tiap mode)")
+print("W = mode sarung tangan putih, B = mode sarung tangan hitam")
+print("Klik 6-8 titik pada sarung tangan di tiap mode")
 print("S = simpan, ESC = keluar")
 
 while True:
@@ -32,9 +30,9 @@ while True:
     frame = cv2.flip(frame, 1)
     frame_raw = frame.copy()
     view = frame.copy()
-    cv2.putText(view, f"MODE: {mode.upper()}  (klik pada objek)", (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
-    cv2.putText(view, f"putih:{len(samples['white'])} kulit:{len(samples['skin'])}",
+    cv2.putText(view, f"MODE: {mode.upper()}  (klik pada sarung tangan)", (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+    cv2.putText(view, f"putih:{len(samples['white'])} hitam:{len(samples['black'])}",
                 (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
     cv2.imshow("kalibrasi", view)
 
@@ -43,22 +41,25 @@ while True:
         break
     elif key == ord('w'):
         mode = "white"
-    elif key == ord('k'):
-        mode = "skin"
+    elif key == ord('b'):
+        mode = "black"
     elif key == ord('s'):
-        if not samples["white"] or not samples["skin"]:
-            print("Ambil sampel putih DAN kulit dulu!")
+        if not samples["white"] or not samples["black"]:
+            print("Ambil sampel putih DAN hitam dulu!")
             continue
-        out = {}
-        for name in ("white", "skin"):
-            data = np.vstack(samples[name])
-            lo = np.percentile(data, 5, axis=0)
-            hi = np.percentile(data, 95, axis=0)
-            pad = np.array([8, 25, 25])        # toleransi H, S, V
-            lo = np.clip(lo - pad, 0, 255).astype(int).tolist()
-            hi = np.clip(hi + pad, 0, 255).astype(int).tolist()
-            hi[0] = min(hi[0], 179)
-            out[name] = {"lo": lo, "hi": hi}
+
+        # Putih: rentang H, S, V dari sampel
+        data = np.vstack(samples["white"])
+        lo = np.clip(np.percentile(data, 5, axis=0) - np.array([8, 25, 25]), 0, 255).astype(int).tolist()
+        hi = np.clip(np.percentile(data, 95, axis=0) + np.array([8, 25, 25]), 0, 255).astype(int).tolist()
+        hi[0] = min(hi[0], 179)
+        out = {"white": {"lo": lo, "hi": hi}}
+
+        # Hitam: H dan S bebas, hanya V yang dibatasi dari atas
+        data = np.vstack(samples["black"])
+        v_hi = int(min(255, np.percentile(data[:, 2], 95) + 25))
+        out["black"] = {"lo": [0, 0, 0], "hi": [179, 255, v_hi]}
+
         with open("warna.json", "w") as f:
             json.dump(out, f)
         print("Tersimpan ke warna.json:", out)

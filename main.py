@@ -13,12 +13,12 @@ while True:
     if not ok:
         print("Kamera tidak terbaca")
         break
-    frame = cv2.flip(frame, 1)   # cermin, supaya gerakan natural
+    frame = cv2.flip(frame, 1)   
     fh, fw = frame.shape[:2]
 
     state, pos, white, skin = det.detect(frame)
 
-    # Tinggi tangan di kamera (setelah area wajah) -> posisi Y di game
+    # movement atas bawah
     target_y = None
     if pos is not None:
         top = int(fh * det.roi_top)
@@ -30,7 +30,7 @@ while True:
 
     canvas = game.draw(paused)
 
-    # Preview kamera kecil di pojok kanan bawah
+    # popup kamera
     preview = cv2.resize(frame, (240, 180))
     if pos is not None:
         px = int(pos[0] / fw * 240)
@@ -42,7 +42,7 @@ while True:
     cv2.imshow("Gundam Dodge", canvas)
 
     key = cv2.waitKey(1) & 0xFF
-    if key == 27:            # ESC = keluar
+    if key == 27:            # ESC = exit
         break
     elif key == ord('p'):    # P = pause
         paused = not paused
