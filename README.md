@@ -1,7 +1,7 @@
 # Project-1-PCV
 # Gundam Dodge: Mini Game Berbasis Warna Tangan
 
-Game horizontal dengan tema space. Player mengendalikan **Wing Gundam Zero (mode burung)** untuk menghindari serangan **Zaku** yang datang dari kanan. Pemain **tidak memakai keyboard atau mouse**. Pesawat dikendalikan lewat **warna sarung tangan** yang terbaca webcam, memakai Python dan OpenCV **tanpa MediaPipe**.
+Game horizontal dengan tema space. Player mengendalikan Wing Gundam Zero untuk menghindari Zaku yang datang dari kanan. Pemain tidak memakai keyboard atau mouse. Pesawat dikendalikan lewat warna sarung tangan yang terbaca webcam, memakai Python dan OpenCV tanpa MediaPipe.
 
 ## Gimmick
 
@@ -21,7 +21,7 @@ Game horizontal dengan tema space. Player mengendalikan **Wing Gundam Zero (mode
 | Sarung tangan putih | Maju |
 | Sarung tangan hitam | Mundur |
 | Tinggi tangan | Naik / turun |
-| `C` | Ambil foto referensi latar (**tanpa tangan di frame**) |
+| `C` | Ambil foto referensi latar (tanpa tangan di frame) |
 | `P` | Pause |
 | `R` | Restart |
 | `ESC` | Keluar |
