@@ -7,7 +7,7 @@ while True:
         print("Kamera tidak terbaca")
         break
     cv2.imshow("tes", frame)
-    if cv2.waitKey(1) == 27:   # tekan ESC untuk keluar
+    if cv2.waitKey(1) == 27:  
         break
 cap.release()
 cv2.destroyAllWindows()
