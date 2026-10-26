@@ -48,14 +48,12 @@ while True:
             print("Ambil sampel putih DAN hitam dulu!")
             continue
 
-        # Putih: rentang H, S, V dari sampel
         data = np.vstack(samples["white"])
         lo = np.clip(np.percentile(data, 5, axis=0) - np.array([8, 25, 25]), 0, 255).astype(int).tolist()
         hi = np.clip(np.percentile(data, 95, axis=0) + np.array([8, 25, 25]), 0, 255).astype(int).tolist()
         hi[0] = min(hi[0], 179)
         out = {"white": {"lo": lo, "hi": hi}}
 
-        # Hitam: H dan S bebas, hanya V yang dibatasi dari atas
         data = np.vstack(samples["black"])
         v_hi = int(min(255, np.percentile(data[:, 2], 95) + 25))
         out["black"] = {"lo": [0, 0, 0], "hi": [179, 255, v_hi]}

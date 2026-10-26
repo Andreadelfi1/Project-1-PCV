@@ -70,10 +70,10 @@ class Player:
 
     def update(self, state, target_y):
         if state == "white":
-            self.x += self.speed       # maju 
+            self.x += self.speed   
         elif state == "black":
-            self.x -= self.speed       # mundur (kiri) 
-        if target_y is not None:       # naik/turun 
+            self.x -= self.speed      
+        if target_y is not None:    
             self.y += (target_y - self.h / 2 - self.y) * 0.15
         self.x = max(0, min(W - self.w, self.x))
         self.y = max(0, min(H - self.h, self.y))
