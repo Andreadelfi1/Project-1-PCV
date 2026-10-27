@@ -6,7 +6,6 @@ W, H = 960, 540
 
 
 def load_img(path, width):
-    """Muat gambar (dengan alpha) dan ubah ukuran berdasarkan lebar."""
     img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
     if img is None:
         raise FileNotFoundError(f"Gambar tidak ditemukan: {path}")
@@ -20,7 +19,6 @@ def load_img(path, width):
 
 
 def load_background(path):
-    """Muat background, potong tengah ke rasio layar, lalu ubah ukuran."""
     bg = cv2.imread(path)
     if bg is None:
         raise FileNotFoundError(f"Background tidak ditemukan: {path}")
@@ -37,7 +35,6 @@ def load_background(path):
 
 
 def overlay(bg, img, x, y):
-    """Tempel img (boleh transparan) ke bg pada posisi x, y."""
     x, y = int(x), int(y)
     h, w = img.shape[:2]
     if x >= bg.shape[1] or y >= bg.shape[0] or x + w <= 0 or y + h <= 0:
@@ -52,7 +49,6 @@ def overlay(bg, img, x, y):
 
 
 def hit(a, b, shrink=0.25):
-    """Tabrakan dua kotak (x, y, w, h); hitbox dikecilkan agar adil."""
     ax, ay, aw, ah = a
     bx, by, bw, bh = b
     ax += aw * shrink; ay += ah * shrink; aw *= (1 - 2 * shrink); ah *= (1 - 2 * shrink)
